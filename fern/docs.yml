@@ -1,9 +1,11 @@
 instances:
-  - url: https://plantstore.docs.buildwithfern.com
-title: Plantstore | Documentation
+  - url: https://grpc-demo.docs.buildwithfern.com
+title: gRPC Demo | Documentation
 navigation:
   - api: API Reference
     paginated: true
 colors:
-  accentPrimary: '#ffffff'
-  background: '#000000'
+  accentPrimary: '#000000'
+  background: '#FFFFFF'
+logo: 
+  right-text: gRPC Demo
