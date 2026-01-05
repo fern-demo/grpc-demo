@@ -1,0 +1,22 @@
+name: Publish Docs
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Fern
+        run: npm install -g fern-api
+
+      - name: Publish Docs
+        env:
+          FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
+        run: fern generate --docs

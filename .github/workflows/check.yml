@@ -1,0 +1,21 @@
+name: Fern Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Fern
+        run: npm install -g fern-api
+
+      - name: Run Fern Check
+        env:
+          FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
+        run: fern check
