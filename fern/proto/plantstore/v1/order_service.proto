@@ -1,0 +1,206 @@
+syntax = "proto3";
+
+package plantstore.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// OrderService provides operations for managing plant orders
+service OrderService {
+  // Create a new order
+  rpc CreateOrder(CreateOrderRequest) returns (Order);
+  
+  // Get an order by its unique identifier
+  rpc GetOrder(GetOrderRequest) returns (Order);
+  
+  // List orders for a customer
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
+  
+  // Update the status of an order
+  rpc UpdateOrderStatus(UpdateOrderStatusRequest) returns (Order);
+  
+  // Cancel an order
+  rpc CancelOrder(CancelOrderRequest) returns (Order);
+}
+
+// Order represents a customer's plant order
+message Order {
+  // Unique identifier for the order
+  string id = 1;
+  
+  // Customer ID who placed the order
+  string customer_id = 2;
+  
+  // Items in the order
+  repeated OrderItem items = 3;
+  
+  // Current status of the order
+  OrderStatus status = 4;
+  
+  // Shipping address
+  Address shipping_address = 5;
+  
+  // Subtotal in cents (before tax and shipping)
+  int32 subtotal_cents = 6;
+  
+  // Tax amount in cents
+  int32 tax_cents = 7;
+  
+  // Shipping cost in cents
+  int32 shipping_cents = 8;
+  
+  // Total amount in cents
+  int32 total_cents = 9;
+  
+  // When the order was placed
+  google.protobuf.Timestamp created_at = 10;
+  
+  // When the order was last updated
+  google.protobuf.Timestamp updated_at = 11;
+  
+  // Estimated delivery date
+  google.protobuf.Timestamp estimated_delivery = 12;
+  
+  // Special instructions for the order
+  string notes = 13;
+}
+
+// Individual item in an order
+message OrderItem {
+  // Plant ID
+  string plant_id = 1;
+  
+  // Plant name (denormalized for convenience)
+  string plant_name = 2;
+  
+  // Quantity ordered
+  int32 quantity = 3;
+  
+  // Price per unit in cents at time of order
+  int32 unit_price_cents = 4;
+  
+  // Total price for this line item in cents
+  int32 total_cents = 5;
+}
+
+// Shipping address
+message Address {
+  // Street address line 1
+  string line1 = 1;
+  
+  // Street address line 2 (optional)
+  string line2 = 2;
+  
+  // City
+  string city = 3;
+  
+  // State or province
+  string state = 4;
+  
+  // Postal code
+  string postal_code = 5;
+  
+  // Country code (ISO 3166-1 alpha-2)
+  string country = 6;
+}
+
+// Request to create a new order
+message CreateOrderRequest {
+  // Customer ID placing the order
+  string customer_id = 1;
+  
+  // Items to order
+  repeated OrderItemInput items = 2;
+  
+  // Shipping address
+  Address shipping_address = 3;
+  
+  // Special instructions
+  string notes = 4;
+}
+
+// Input for creating an order item
+message OrderItemInput {
+  // Plant ID to order
+  string plant_id = 1;
+  
+  // Quantity to order
+  int32 quantity = 2;
+}
+
+// Request to get an order
+message GetOrderRequest {
+  // Order ID to retrieve
+  string id = 1;
+}
+
+// Request to list orders
+message ListOrdersRequest {
+  // Customer ID to filter by
+  string customer_id = 1;
+  
+  // Maximum number of orders to return
+  int32 page_size = 2;
+  
+  // Pagination token
+  string page_token = 3;
+  
+  // Optional status filter
+  repeated OrderStatus status_filter = 4;
+}
+
+// Response containing a list of orders
+message ListOrdersResponse {
+  // The list of orders
+  repeated Order orders = 1;
+  
+  // Token for the next page
+  string next_page_token = 2;
+  
+  // Total count of matching orders
+  int32 total_count = 3;
+}
+
+// Request to update order status
+message UpdateOrderStatusRequest {
+  // Order ID to update
+  string id = 1;
+  
+  // New status
+  OrderStatus status = 2;
+}
+
+// Request to cancel an order
+message CancelOrderRequest {
+  // Order ID to cancel
+  string id = 1;
+  
+  // Reason for cancellation
+  string reason = 2;
+}
+
+// Order status
+enum OrderStatus {
+  // Unspecified status
+  ORDER_STATUS_UNSPECIFIED = 0;
+  
+  // Order has been placed but not yet processed
+  ORDER_STATUS_PENDING = 1;
+  
+  // Order has been confirmed and is being prepared
+  ORDER_STATUS_CONFIRMED = 2;
+  
+  // Order is being prepared for shipment
+  ORDER_STATUS_PROCESSING = 3;
+  
+  // Order has been shipped
+  ORDER_STATUS_SHIPPED = 4;
+  
+  // Order has been delivered
+  ORDER_STATUS_DELIVERED = 5;
+  
+  // Order has been cancelled
+  ORDER_STATUS_CANCELLED = 6;
+  
+  // Order has been refunded
+  ORDER_STATUS_REFUNDED = 7;
+}

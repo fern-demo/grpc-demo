@@ -1,6 +1,6 @@
 instances:
-  - url: https:// plantstore.docs.buildwithfern.com
-title: ' Plantstore | Documentation'
+  - url: https://plantstore.docs.buildwithfern.com
+title: Plantstore | Documentation
 navigation:
   - api: API Reference
     paginated: true

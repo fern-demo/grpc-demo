@@ -1,0 +1,10 @@
+api:
+  specs:
+    - proto:
+        root: proto
+        target: proto/plantstore/v1/plant_service.proto
+        local-generation: true
+    - proto:
+        root: proto
+        target: proto/plantstore/v1/order_service.proto
+        local-generation: true
