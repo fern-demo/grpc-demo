@@ -90,7 +90,6 @@ api:
     - proto:
         root: proto
         target: proto/your-package/v1/your_service.proto
-        local-generation: true
 ```
 
 ### 4. Configure Proto Sources
@@ -107,9 +106,6 @@ api:
         # Optional: specific proto file to generate docs for
         # Omit to generate docs for all proto files in root
         target: proto/your-package/v1/service.proto
-        
-        # Whether to compile protos locally (default: false)
-        local-generation: true
 ```
 
 ### 5. Customize Documentation Appearance
