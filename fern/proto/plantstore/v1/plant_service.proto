@@ -1,0 +1,306 @@
+syntax = "proto3";
+
+package plantstore.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// PlantService provides operations for managing plants in the store
+service PlantService {
+  // Create a new plant listing
+  rpc CreatePlant(CreatePlantRequest) returns (Plant);
+  
+  // Get a plant by its unique identifier
+  rpc GetPlant(GetPlantRequest) returns (Plant);
+  
+  // List all plants with optional filtering and pagination
+  rpc ListPlants(ListPlantsRequest) returns (ListPlantsResponse);
+  
+  // Update an existing plant's information
+  rpc UpdatePlant(UpdatePlantRequest) returns (Plant);
+  
+  // Delete a plant from the store
+  rpc DeletePlant(DeletePlantRequest) returns (google.protobuf.Empty);
+  
+  // Search plants by various criteria
+  rpc SearchPlants(SearchPlantsRequest) returns (SearchPlantsResponse);
+}
+
+// Plant represents a plant available in the store
+message Plant {
+  // Unique identifier for the plant
+  string id = 1;
+  
+  // Common name of the plant (e.g., "Snake Plant")
+  string name = 2;
+  
+  // Scientific name (e.g., "Sansevieria trifasciata")
+  string scientific_name = 3;
+  
+  // Detailed description of the plant
+  string description = 4;
+  
+  // Price in cents (e.g., 2999 = $29.99)
+  int32 price_cents = 5;
+  
+  // Category of the plant
+  PlantCategory category = 6;
+  
+  // Care difficulty level
+  CareDifficulty care_difficulty = 7;
+  
+  // Light requirements
+  LightRequirement light_requirement = 8;
+  
+  // Watering frequency
+  WateringFrequency watering_frequency = 9;
+  
+  // Whether the plant is pet-friendly
+  bool pet_friendly = 10;
+  
+  // Current stock quantity
+  int32 stock_quantity = 11;
+  
+  // URLs to plant images
+  repeated string image_urls = 12;
+  
+  // When the plant was added to the store
+  google.protobuf.Timestamp created_at = 13;
+  
+  // When the plant information was last updated
+  google.protobuf.Timestamp updated_at = 14;
+}
+
+// Request to create a new plant
+message CreatePlantRequest {
+  // Common name of the plant
+  string name = 1;
+  
+  // Scientific name
+  string scientific_name = 2;
+  
+  // Description
+  string description = 3;
+  
+  // Price in cents
+  int32 price_cents = 4;
+  
+  // Category
+  PlantCategory category = 5;
+  
+  // Care difficulty
+  CareDifficulty care_difficulty = 6;
+  
+  // Light requirement
+  LightRequirement light_requirement = 7;
+  
+  // Watering frequency
+  WateringFrequency watering_frequency = 8;
+  
+  // Pet-friendly flag
+  bool pet_friendly = 9;
+  
+  // Initial stock quantity
+  int32 stock_quantity = 10;
+  
+  // Image URLs
+  repeated string image_urls = 11;
+}
+
+// Request to get a plant by ID
+message GetPlantRequest {
+  // The unique identifier of the plant to retrieve
+  string id = 1;
+}
+
+// Request to list plants
+message ListPlantsRequest {
+  // Maximum number of plants to return (default: 20, max: 100)
+  int32 page_size = 1;
+  
+  // Token for pagination
+  string page_token = 2;
+  
+  // Optional filter by category
+  PlantCategory category = 3;
+  
+  // Optional filter by care difficulty
+  CareDifficulty care_difficulty = 4;
+  
+  // Optional filter for pet-friendly plants only
+  bool pet_friendly_only = 5;
+  
+  // Optional filter for in-stock plants only
+  bool in_stock_only = 6;
+}
+
+// Response containing a list of plants
+message ListPlantsResponse {
+  // The list of plants
+  repeated Plant plants = 1;
+  
+  // Token for the next page, empty if no more results
+  string next_page_token = 2;
+  
+  // Total count of plants matching the filter
+  int32 total_count = 3;
+}
+
+// Request to update a plant
+message UpdatePlantRequest {
+  // The ID of the plant to update
+  string id = 1;
+  
+  // Updated name (optional)
+  optional string name = 2;
+  
+  // Updated scientific name (optional)
+  optional string scientific_name = 3;
+  
+  // Updated description (optional)
+  optional string description = 4;
+  
+  // Updated price in cents (optional)
+  optional int32 price_cents = 5;
+  
+  // Updated category (optional)
+  optional PlantCategory category = 6;
+  
+  // Updated care difficulty (optional)
+  optional CareDifficulty care_difficulty = 7;
+  
+  // Updated light requirement (optional)
+  optional LightRequirement light_requirement = 8;
+  
+  // Updated watering frequency (optional)
+  optional WateringFrequency watering_frequency = 9;
+  
+  // Updated pet-friendly flag (optional)
+  optional bool pet_friendly = 10;
+  
+  // Updated stock quantity (optional)
+  optional int32 stock_quantity = 11;
+  
+  // Updated image URLs (replaces existing)
+  repeated string image_urls = 12;
+}
+
+// Request to delete a plant
+message DeletePlantRequest {
+  // The ID of the plant to delete
+  string id = 1;
+}
+
+// Request to search plants
+message SearchPlantsRequest {
+  // Search query string
+  string query = 1;
+  
+  // Maximum number of results (default: 20, max: 100)
+  int32 page_size = 2;
+  
+  // Pagination token
+  string page_token = 3;
+  
+  // Optional category filter
+  repeated PlantCategory categories = 4;
+  
+  // Minimum price in cents
+  optional int32 min_price_cents = 5;
+  
+  // Maximum price in cents
+  optional int32 max_price_cents = 6;
+}
+
+// Response containing search results
+message SearchPlantsResponse {
+  // Matching plants
+  repeated Plant plants = 1;
+  
+  // Token for next page
+  string next_page_token = 2;
+  
+  // Total matching results
+  int32 total_count = 3;
+}
+
+// Categories of plants
+enum PlantCategory {
+  // Unspecified category
+  PLANT_CATEGORY_UNSPECIFIED = 0;
+  
+  // Indoor houseplants
+  PLANT_CATEGORY_INDOOR = 1;
+  
+  // Outdoor garden plants
+  PLANT_CATEGORY_OUTDOOR = 2;
+  
+  // Succulents and cacti
+  PLANT_CATEGORY_SUCCULENT = 3;
+  
+  // Flowering plants
+  PLANT_CATEGORY_FLOWERING = 4;
+  
+  // Tropical plants
+  PLANT_CATEGORY_TROPICAL = 5;
+  
+  // Herbs and edibles
+  PLANT_CATEGORY_HERB = 6;
+  
+  // Trees and shrubs
+  PLANT_CATEGORY_TREE = 7;
+}
+
+// Care difficulty levels
+enum CareDifficulty {
+  // Unspecified difficulty
+  CARE_DIFFICULTY_UNSPECIFIED = 0;
+  
+  // Easy - great for beginners
+  CARE_DIFFICULTY_EASY = 1;
+  
+  // Moderate - some experience helpful
+  CARE_DIFFICULTY_MODERATE = 2;
+  
+  // Hard - requires experienced care
+  CARE_DIFFICULTY_HARD = 3;
+  
+  // Expert - for advanced plant enthusiasts
+  CARE_DIFFICULTY_EXPERT = 4;
+}
+
+// Light requirements
+enum LightRequirement {
+  // Unspecified light requirement
+  LIGHT_REQUIREMENT_UNSPECIFIED = 0;
+  
+  // Low light - can thrive in shade
+  LIGHT_REQUIREMENT_LOW = 1;
+  
+  // Medium light - indirect sunlight
+  LIGHT_REQUIREMENT_MEDIUM = 2;
+  
+  // Bright light - direct or bright indirect
+  LIGHT_REQUIREMENT_BRIGHT = 3;
+  
+  // Full sun - needs direct sunlight
+  LIGHT_REQUIREMENT_FULL_SUN = 4;
+}
+
+// Watering frequency
+enum WateringFrequency {
+  // Unspecified watering frequency
+  WATERING_FREQUENCY_UNSPECIFIED = 0;
+  
+  // Rarely - every 2-3 weeks
+  WATERING_FREQUENCY_LOW = 1;
+  
+  // Weekly watering
+  WATERING_FREQUENCY_MODERATE = 2;
+  
+  // Twice weekly or more
+  WATERING_FREQUENCY_HIGH = 3;
+  
+  // Keep soil consistently moist
+  WATERING_FREQUENCY_CONSTANT = 4;
+}
